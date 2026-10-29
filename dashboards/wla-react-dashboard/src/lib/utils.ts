@@ -106,6 +106,35 @@ const STORAGE_KEY = 'wla-parameters';
 
 export type SavedParam = { weight: number; checked: boolean; variant: string | undefined };
 
+/** The three selectable importance levels a parameter's weight can take. */
+export const WEIGHT_LEVELS = [
+  { name: 'Little Importance', weight: 0.5 },
+  { name: 'Somewhat Important', weight: 1.0 },
+  { name: 'Very Important', weight: 2.0 },
+] as const;
+
+/**
+ * Return the index into `WEIGHT_LEVELS` of the level closest to `weight`.
+ * Snaps legacy continuous weights (e.g. from old share links) to a level.
+ */
+export function weightLevelIndex(weight: number): number {
+  let best = 0;
+  for (let i = 1; i < WEIGHT_LEVELS.length; i++) {
+    if (Math.abs(WEIGHT_LEVELS[i].weight - weight) < Math.abs(WEIGHT_LEVELS[best].weight - weight)) best = i;
+  }
+  return best;
+}
+
+/** Return the weight of a randomly chosen level. */
+export function randomWeight(): number {
+  return WEIGHT_LEVELS[Math.floor(Math.random() * WEIGHT_LEVELS.length)].weight;
+}
+
+/** Snap a weight (e.g. from an old share link) to the nearest level's weight. */
+export function snapWeight(weight: number): number {
+  return WEIGHT_LEVELS[weightLevelIndex(weight)].weight;
+}
+
 export function loadSavedParams(): Record<string, SavedParam> {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);

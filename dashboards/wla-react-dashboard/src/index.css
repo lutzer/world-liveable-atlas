@@ -323,6 +323,46 @@ button.rt-Button {
   text-align: center;
 }
 
+/* four-step importance slider: tick marks + end labels under the track */
+.wla-field-slider-wrap {
+  /* Radix size-1 thumb; Radix keeps the thumb in bounds, so stops sit half a thumb in from each end */
+  --wla-thumb: calc(var(--space-2) * 0.75 + var(--space-1));
+  margin-top: 12px;
+}
+
+/* stronger, ink-green track so it stands out on the paper background */
+.wla-field-slider-wrap .rt-SliderTrack {
+  background-color: color-mix(in srgb, var(--ink) 20%, transparent);
+  box-shadow: none;
+}
+
+.wla-field-scale {
+  position: relative;
+  height: 5px;
+  margin: 8px calc(var(--wla-thumb) / 2) 0;
+}
+
+.wla-field-tick {
+  position: absolute;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  transform: translateX(-50%);
+  background: var(--text-on-paper-dim);
+}
+
+.wla-field-scale-labels {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3px;
+  margin-bottom: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-on-paper-dim);
+}
+
 .wla-field-desc {
   font-size: 11.5px;
   color: var(--text-on-paper-dim);
@@ -400,38 +440,6 @@ button.rt-Button {
 }
 .wla-field.cat-other {
   background-color: color-mix(in srgb, var(--other-color) 14%, transparent);
-}
-
-/* checkbox — square, thin, on paper */
-.wla-field-check {
-  appearance: none;
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  border: 1.5px solid rgba(27, 47, 40, 0.5);
-  border-radius: 3px;
-  background: #fff;
-  cursor: pointer;
-  position: relative;
-  flex: 0 0 auto;
-  margin: 0;
-}
-
-.wla-field-check:checked {
-  background: var(--text-on-paper);
-  border-color: var(--text-on-paper);
-}
-
-.wla-field-check:checked::after {
-  content: '';
-  position: absolute;
-  left: 3px;
-  top: 0px;
-  width: 4px;
-  height: 8px;
-  border: solid var(--paper);
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg);
 }
 
 /* range slider */

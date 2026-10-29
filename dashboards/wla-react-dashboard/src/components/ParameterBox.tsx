@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { WlaParameter } from "../lib/data_loader";
+import { WEIGHT_LEVELS, weightLevelIndex } from "../lib/utils";
 import { Button, Checkbox, Select, Slider, Text, Theme } from "@radix-ui/themes";
 import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
 
@@ -15,9 +16,11 @@ function categoryClass(category: string): string {
 }
 
 /**
- * Slim, single-column parameter row: checkbox + label + numeric weight badge on
- * top, optional variant select, slider, description, and an expand-for-sources
- * toggle. Renders as a `.wla-field` inside the sticky Parameters panel.
+ * Slim, single-column parameter row: checkbox + label + effective weight badge
+ * on top, optional variant select, a three-step importance slider with tick
+ * marks and end labels (Little Importance … Very Important), description, and
+ * an expand-for-sources toggle. Renders as a `.wla-field` inside the sticky
+ * Parameters panel.
  */
 export function ParameterBox({
     parameter,
@@ -32,7 +35,9 @@ export function ParameterBox({
 }) {
     const [expanded, setExpanded] = useState(false);
     const sources = parameter.descriptor.sources ?? [];
+    const level = weightLevelIndex(parameter.weight);
     const disabled = !parameter.checked;
+    const effectiveWeight = parameter.weight * parameter.descriptor.correlationMultiplier;
     const variants = parameter.descriptor.variants
         ? (parameter.descriptor.variants as Record<string, string>)
         : null;
@@ -57,7 +62,7 @@ export function ParameterBox({
                         </div>
                     )}
                 </Text>
-                <span className="wla-field-val">{(parameter.weight * parameter.descriptor.correlationMultiplier).toFixed(1)}</span>
+                <span className="wla-field-val">{effectiveWeight.toFixed(1)}</span>
             </div>
 
             {variants && (
@@ -78,16 +83,31 @@ export function ParameterBox({
                 </Theme>
             )}
 
+            <div className="wla-field-slider-wrap">
             <Slider
                 size="1"
-                min={0.1}
-                max={2.0}
-                step={0.1}
-                value={[parameter.weight]}
+                min={0}
+                max={WEIGHT_LEVELS.length - 1}
+                step={1}
+                value={[level]}
                 disabled={disabled}
-                onValueChange={(v) => onWeightChange(v[0])}
-                style={{ marginTop: 12 }}
+                onValueChange={(v) => onWeightChange(WEIGHT_LEVELS[v[0]].weight)}
             />
+            <div className="wla-field-scale">
+                {WEIGHT_LEVELS.map((l, i) => (
+                    <span
+                        key={l.name}
+                        className="wla-field-tick"
+                        title={l.name}
+                        style={{ left: `${(i / (WEIGHT_LEVELS.length - 1)) * 100}%` }}
+                    />
+                ))}
+            </div>
+            <div className="wla-field-scale-labels">
+                <span>{WEIGHT_LEVELS[0].name}</span>
+                <span>{WEIGHT_LEVELS[WEIGHT_LEVELS.length - 1].name}</span>
+            </div>
+            </div>
 
             <div className="wla-field-desc">{parameter.descriptor.description}</div>
 

@@ -13,7 +13,7 @@ import { ParameterBox } from './components/ParameterBox';
 import { CellInfoCard } from './components/CellInfoCard';
 import { CellsTable } from './components/CellsTable';
 import "@radix-ui/themes/styles.css";
-import { computeWeightedScore, constructWeightVectorFromParamaters, decodeObjectFromHash, encodeObjectToHash, loadSavedParams, sortedIndicesByScore, storeParams, type SavedParam } from './lib/utils';
+import { computeWeightedScore, constructWeightVectorFromParamaters, decodeObjectFromHash, encodeObjectToHash, loadSavedParams, randomWeight, snapWeight, sortedIndicesByScore, storeParams, type SavedParam } from './lib/utils';
 import { AtlasLink } from './components/AtlasLink';
 
 function App() {
@@ -61,8 +61,8 @@ function App() {
           let saved = savedParams && savedParams[d.id]
           return {
             descriptor: d,
-            weight: saved?.weight || Number((Math.random() * 1.9 + 0.1).toFixed(1)),
-            checked: saved?.checked || true,
+            weight: saved ? snapWeight(saved.weight) : randomWeight(),
+            checked: saved?.checked ?? true,
             variant: saved?.variant || d.defaultVariant,
           };
         }));
@@ -97,7 +97,7 @@ function App() {
     if (savedParams && parameters) {
       setParameters(parameters.map((p) => {
         let saved = savedParams && savedParams[p.descriptor.id]
-        return {...p, weight: saved.weight, checked: saved.checked, variant: saved.variant }
+        return {...p, weight: snapWeight(saved.weight), checked: saved.checked, variant: saved.variant }
       }));
     }
   },[hash])
@@ -129,7 +129,7 @@ function App() {
       const variant = variantKeys.length > 0
         ? variantKeys[Math.floor(Math.random() * variantKeys.length)]
         : p.variant;
-      return { ...p, weight: Number((Math.random() * 1.9 + 0.1).toFixed(1)), checked: true, variant };
+      return { ...p, weight: randomWeight(), checked: true, variant };
     }));
   }
 
@@ -149,7 +149,7 @@ function App() {
           <p className="wla-lede">
             This project explores our planet in respect of the most liveable places.
             It divides the planet in cells of 0.5° latitude and longitude. At the equator a cell spans roughly 56km x 56km. The grid gets denser to the poles: at 60° latitude its size is 56 km x 28 km.
-            Each grid cell is scored by a number of different metrices, that are weighted by the sliders below to reflect your priorities.
+            Each grid cell is scored by a number of different metrices, that you rate below from <em>Little Importance</em> to <em>Very Important</em> to reflect your priorities.
             Some of the parameters require you to pick a personal preference, such as temperature, rainfall and population. 
             The parameters have different weight ranges to account for corellated data sets.
             At the end of this survey you might find the perfect place for you to live.
