@@ -106,10 +106,12 @@ const STORAGE_KEY = 'wla-parameters';
 
 export type SavedParam = { weight: number; checked: boolean; variant: string | undefined };
 
-/** The three selectable importance levels a parameter's weight can take. */
+/** The five selectable importance levels; weights grow by ~×√2 per step. */
 export const WEIGHT_LEVELS = [
   { name: 'Little Importance', weight: 0.5 },
+  { name: 'Minor Importance', weight: 0.7 },
   { name: 'Somewhat Important', weight: 1.0 },
+  { name: 'Quite Important', weight: 1.4 },
   { name: 'Very Important', weight: 2.0 },
 ] as const;
 

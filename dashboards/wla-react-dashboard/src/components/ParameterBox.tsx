@@ -17,7 +17,7 @@ function categoryClass(category: string): string {
 
 /**
  * Slim, single-column parameter row: checkbox + label + effective weight badge
- * on top, optional variant select, a three-step importance slider with tick
+ * on top, optional variant select, a five-step importance slider with tick
  * marks and end labels (Little Importance … Very Important), description, and
  * an expand-for-sources toggle. Renders as a `.wla-field` inside the sticky
  * Parameters panel.
